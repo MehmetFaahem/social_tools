@@ -1,0 +1,61 @@
+{% extends 'tools/base.html' %} {% block content %}
+
+<div class="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+    Instagram Reel Download
+  </h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <input
+      type="url"
+      id="url"
+      name="url"
+      class="w-full p-3 border rounded focus:outline-none focus:border-blue-500"
+      placeholder="Enter Instagram reel URL"
+      required
+    />
+    <button
+      type="submit"
+      class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+      onclick="this.form.submit(); this.disabled=true; this.innerHTML='<div class=\'loader\'></div>Fetching your video...';"
+    >
+      Download Reel
+    </button>
+  </form>
+  {% if error %}
+  <div class="mt-4 text-center text-red-600">{{ error }}</div>
+  {% endif %} {% if download_link %}
+  <div class="mt-4 text-center">
+    <a
+      href="{{ download_link }}"
+      target="_blank"
+      class="text-white font-bold bg-black px-4 py-2 rounded-md hover:bg-gray-800 transition w-full block text-center"
+      >Click Here to Download Reel</a
+    >
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock content %}

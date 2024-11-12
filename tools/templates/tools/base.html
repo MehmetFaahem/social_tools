@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Tool Suite{% endblock title %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <header class="bg-blue-600 text-white p-4 shadow-lg">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Media & Content Tools</h1>
+        <nav>
+          <a href="{% url 'homepage' %}" class="hover:underline px-4">Home</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto p-6">
+      {% block content %}{% endblock content %}
+    </main>
+
+    <footer
+      class="bg-blue-600 text-white text-center p-4 mt-8 absolute bottom-0 w-full"
+    >
+      <p>&copy; 2024 Media & Content Tools. Built with ❤️ and Django</p>
+    </footer>
+  </body>
+</html>
