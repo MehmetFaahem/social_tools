@@ -1,42 +1,148 @@
-{% extends 'tools/base.html' %} {% block title %}Instagram Hashtag Generator{%
-endblock %} {% block content %}
+{% extends 'tools/base.html' %} {% block content %}
 <div class="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto">
   <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
     Instagram Hashtag Generator
   </h2>
-  <form id="hashtag-form" method="post" class="space-y-4">
+  <form method="post" class="space-y-4">
     {% csrf_token %}
     <input
-      type="url"
-      id="image_url"
-      name="image_url"
+      type="text"
+      id="post_title"
+      name="post_title"
       class="w-full p-3 border rounded focus:outline-none focus:border-blue-500"
-      placeholder="Enter Image URL"
+      placeholder="Enter a keyword, topic or title eg: ai"
       required
     />
+    <!-- <input
+      type="number"
+      id="tag_count"
+      name="tag_count"
+      class="w-full p-3 border rounded focus:outline-none focus:border-blue-500"
+      placeholder="Number of Hashtags"
+      min="1"
+      required
+    /> -->
     <button
       type="submit"
       class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+      onclick="this.form.submit(); this.disabled=true; this.innerHTML='<div class=\'loader\'></div>Generating hashtags...';"
     >
       Generate Hashtags
     </button>
   </form>
-  <div id="hashtags" class="mt-4 text-center text-blue-600"></div>
+  {% if error %}
+  <div class="mt-4 text-center text-red-600">{{ error }}</div>
+  {% endif %} {% if hashtags %}
+  <div class="mt-6">
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-lg font-semibold text-gray-700">Generated Hashtags</h3>
+      <button
+        onclick="copyHashtags()"
+        class="bg-green-500 text-white px-4 py-1.5 rounded-full text-sm hover:bg-green-600 transition flex items-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+          />
+        </svg>
+        Copy All
+      </button>
+    </div>
+    <div class="bg-gray-50 rounded-lg p-4">
+      <div class="flex flex-wrap gap-2" id="hashtagContainer">
+        {% for tag in hashtags %}
+        <span
+          class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition cursor-pointer"
+          onclick="copyHashtag('{{ tag }}')"
+        >
+          {{ tag }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+    <div
+      id="copySuccess"
+      class="hidden mt-2 text-center text-sm text-green-600"
+    >
+      Copied to clipboard! ✓
+    </div>
+  </div>
+  {% endif %}
 </div>
 
+<style>
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .fade-out {
+    animation: fadeOut 1.5s ease-out forwards;
+  }
+</style>
+
 <script>
-  document.getElementById("hashtag-form").onsubmit = async function (event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const response = await fetch("{% url 'instagram_hashtag_generator' %}", {
-      method: "POST",
-      headers: { "X-CSRFToken": "{{ csrf_token }}" },
-      body: formData,
+  function copyHashtags() {
+    const container = document.getElementById("hashtagContainer");
+    const tags = Array.from(container.getElementsByTagName("span"))
+      .map((span) => span.textContent.trim())
+      .join(" ");
+
+    navigator.clipboard.writeText(tags).then(() => {
+      showCopySuccess();
     });
-    const data = await response.json();
-    document.getElementById("hashtags").innerHTML = data.hashtags
-      ? `<p>${data.hashtags.join(", ")}</p>`
-      : `<p class="text-red-600">${data.error}</p>`;
-  };
+  }
+
+  function copyHashtag(tag) {
+    navigator.clipboard.writeText(tag).then(() => {
+      showCopySuccess();
+    });
+  }
+
+  function showCopySuccess() {
+    const successMsg = document.getElementById("copySuccess");
+    successMsg.classList.remove("hidden");
+    successMsg.classList.remove("fade-out");
+    void successMsg.offsetWidth; // Trigger reflow
+    successMsg.classList.add("fade-out");
+
+    setTimeout(() => {
+      successMsg.classList.add("hidden");
+    }, 1500);
+  }
 </script>
 {% endblock %}

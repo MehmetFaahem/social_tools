@@ -1,10 +1,10 @@
-{% extends 'tools/base.html' %} {% block title %}Instagram to MP3 Converter{%
-endblock %} {% block content %}
+{% extends 'tools/base.html' %} {% block content %}
+
 <div class="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto">
   <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
     Instagram to MP3 Converter
   </h2>
-  <form id="mp3-form" method="post" class="space-y-4">
+  <form method="post" class="space-y-4" id="convertForm">
     {% csrf_token %}
     <input
       type="url"
@@ -17,26 +17,112 @@ endblock %} {% block content %}
     <button
       type="submit"
       class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+      id="submitBtn"
     >
       Convert to MP3
     </button>
   </form>
-  <div id="download-link" class="mt-4 text-center text-blue-600"></div>
+  <div
+    id="error"
+    class="mt-4 text-center text-red-600"
+    style="display: none"
+  ></div>
+  <div id="loading" class="mt-4 text-center" style="display: none">
+    <div class="loader"></div>
+    <p>Converting video to MP3...</p>
+  </div>
+  <div
+    id="downloaded"
+    class="mt-4 text-center text-green-600 font-bold"
+    style="display: none"
+  >
+    <p>Downloaded successfully!</p>
+  </div>
 </div>
 
+<style>
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
 <script>
-  document.getElementById("mp3-form").onsubmit = async function (event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const response = await fetch("{% url 'instagram_to_mp3' %}", {
-      method: "POST",
-      headers: { "X-CSRFToken": "{{ csrf_token }}" },
-      body: formData,
+  document
+    .getElementById("convertForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = this;
+      const submitBtn = document.getElementById("submitBtn");
+      const loading = document.getElementById("loading");
+      const error = document.getElementById("error");
+      const downloaded = document.getElementById("downloaded");
+      // Show loading, hide error
+      loading.style.display = "block";
+      error.style.display = "none";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Converting...";
+
+      // Submit form
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+      })
+        .then((response) => {
+          if (
+            response.headers.get("content-type")?.includes("application/json")
+          ) {
+            // Handle error response
+            return response.json().then((data) => {
+              throw new Error(data.error);
+            });
+          }
+          // Handle successful response (audio file)
+          return response.blob();
+        })
+        .then((blob) => {
+          // Create download link
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "audio.mp3";
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          a.remove();
+
+          // Reset form state
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Convert to MP3";
+          loading.style.display = "none";
+          downloaded.style.display = "block";
+        })
+        .catch((err) => {
+          // Show error
+          error.textContent =
+            err.message || "An error occurred during conversion";
+          error.style.display = "block";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Convert to MP3";
+          loading.style.display = "none";
+        });
     });
-    const data = await response.json();
-    document.getElementById("download-link").innerHTML = data.download_link
-      ? `<a href="${data.download_link}" target="_blank" class="underline">Download MP3</a>`
-      : `<p class="text-red-600">${data.error}</p>`;
-  };
 </script>
-{% endblock %}
+
+{% endblock content %}

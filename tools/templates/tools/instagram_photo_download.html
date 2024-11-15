@@ -1,5 +1,4 @@
-{% extends 'tools/base.html' %} {% block title %}Instagram Photo Download{%
-endblock %} {% block content %}
+{% extends 'tools/base.html' %} {% block content %}
 <div class="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto">
   <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
     Instagram Photo Download
@@ -17,11 +16,37 @@ endblock %} {% block content %}
     <button
       type="submit"
       class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+      onclick="this.form.submit(); this.disabled=true; this.innerHTML='<div class=\'loader\'></div>Fetching your photo...';"
     >
       Download Photo
     </button>
   </form>
-  <div id="download-link" class="mt-4 text-center text-blue-600"></div>
+  <div id="loading" class="text-center text-blue-600 mt-4 hidden">
+    Loading...
+  </div>
+  {% if photos %}
+  <div class="result gap-4 mt-4">
+    <h1 class="text-left text-sm font-bold">{{ title }}</h1>
+    <h2 class="text-left text-sm text-gray-500 mt-2">By: {{ author }}</h2>
+    <p class="text-left text-xl text-black mt-2 mb-4">
+      Total Photos: {{ photos|length }}
+    </p>
+    <div class="download-section flex flex-col gap-1">
+      {% for photo in photos %}
+      <div class="download-item mb-4">
+        <a
+          href="{{ photo.url }}"
+          class="btn btn-primary"
+          download
+          target="_blank"
+        >
+          <span>{{ forloop.counter }} - </span> Download ({{ photo.quality }})
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 </div>
 
 <script>

@@ -1,10 +1,9 @@
-{% extends 'tools/base.html' %} {% block title %}Facebook Reel Download{%
-endblock %} {% block content %}
+{% extends 'tools/base.html' %} {% block content %}
 <div class="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto">
   <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
     Facebook Reel Download
   </h2>
-  <form id="facebook-reel-form" method="post" class="space-y-4">
+  <form method="post" class="space-y-4">
     {% csrf_token %}
     <input
       type="url"
@@ -17,28 +16,45 @@ endblock %} {% block content %}
     <button
       type="submit"
       class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+      onclick="this.form.submit(); this.disabled=true; this.innerHTML='<div class=\'loader\'></div>Fetching your video...';"
     >
       Download Reel
     </button>
   </form>
-  <div id="download-link" class="mt-4 text-center text-blue-600"></div>
+  {% if error %}
+  <div class="mt-4 text-center text-red-600">{{ error }}</div>
+  {% endif %} {% if download_link %}
+  <div class="mt-4 text-center">
+    <a
+      href="{{ download_link }}"
+      target="_blank"
+      class="text-white font-bold bg-black px-4 py-2 rounded-md hover:bg-gray-800 transition w-full block text-center"
+      >Click Here to Download Reel</a
+    >
+  </div>
+  {% endif %}
 </div>
 
-<script>
-  document.getElementById("facebook-reel-form").onsubmit = async function (
-    event
-  ) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const response = await fetch("{% url 'facebook_reel_download' %}", {
-      method: "POST",
-      headers: { "X-CSRFToken": "{{ csrf_token }}" },
-      body: formData,
-    });
-    const data = await response.json();
-    document.getElementById("download-link").innerHTML = data.download_link
-      ? `<a href="${data.download_link}" target="_blank" class="underline">Download Reel</a>`
-      : `<p class="text-red-600">${data.error}</p>`;
-  };
-</script>
+<style>
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
 {% endblock %}
