@@ -13,26 +13,30 @@ def homepage(request):
 def instagram_reel_download(request):
     if request.method == 'POST':
         try:
-            shortcode = request.POST.get('url').split('/')[4]
-            url = f"https://instagram-scraper-api2.p.rapidapi.com/v1/highlight_info?highlight_id={shortcode}"
+            reel_url = request.POST.get('url')
+            url = "https://instagram-reels-downloader-api.p.rapidapi.com/download"
             headers = {
                 "x-rapidapi-key": "cc092825dfmsha262f7b60dca253p158431jsne06852111435",
-                "x-rapidapi-host": "instagram-scraper-api2.p.rapidapi.com"
-                
+                "x-rapidapi-host": "instagram-reels-downloader-api.p.rapidapi.com"
             }
+            params = {"url": reel_url}
 
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, params=params)
             data = response.json()
             
-            if response.status_code == 200 and 'data' in data and 'video_url' in data['data']:
-                return render(request, 'tools/instagram_reel_download.html', 
-                            {'download_link': data['data']['video_url']})
-            else:
-                return render(request, 'tools/instagram_reel_download.html', 
-                            {'error': 'Failed to retrieve reel link.'})
+            if response.status_code == 200 and data.get('success'):
+                # Get the video URL from the first media item
+                if data['data']['medias'] and len(data['data']['medias']) > 0:
+                    download_link = data['data']['medias'][0]['url']
+                    return render(request, 'tools/instagram_reel_download.html', 
+                                {'download_link': download_link})
+            
+            return render(request, 'tools/instagram_reel_download.html', 
+                        {'error': 'Failed to retrieve reel link.'})
+                        
         except Exception as e:
             return render(request, 'tools/instagram_reel_download.html', 
-                        {'error': 'An error occurred. Please try again.'})
+                        {'error': f'An error occurred: {str(e)}'})
             
     return render(request, 'tools/instagram_reel_download.html')
 
