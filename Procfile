@@ -1,1 +1,1 @@
-web: gunicorn nextdownloader.wsgi
+web: gunicorn social_tools.wsgi
