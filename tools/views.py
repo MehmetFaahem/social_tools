@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 import yt_dlp
 from moviepy.editor import VideoFileClip
@@ -9,6 +9,9 @@ import os
 
 def homepage(request):
     return render(request, "tools/homepage.html")
+
+def goto_homepage(request):
+    return redirect('homepage')
 
 def instagram_reel_download(request):
     if request.method == 'POST':
