@@ -14,10 +14,10 @@ def instagram_reel_download(request):
     if request.method == 'POST':
         try:
             shortcode = request.POST.get('url').split('/')[4]
-            url = f"https://instagram-bulk-scraper-latest.p.rapidapi.com/media_info_from_shortcode/{shortcode}"
+            url = f"https://instagram-scraper-api2.p.rapidapi.com/v1/highlight_info?highlight_id={shortcode}"
             headers = {
-                "x-rapidapi-key": "03a60e6e87msh86247b7465ddf69p131bccjsn9e01b4bca8a9",
-                "x-rapidapi-host": "instagram-bulk-scraper-latest.p.rapidapi.com"
+                "x-rapidapi-key": "cc092825dfmsha262f7b60dca253p158431jsne06852111435",
+                "x-rapidapi-host": "instagram-scraper-api2.p.rapidapi.com"
                 
             }
 
