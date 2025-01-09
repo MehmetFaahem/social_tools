@@ -4,7 +4,7 @@
     Instagram Photo Download
   </h2>
   <form id="photo-form" method="post" class="space-y-4">
-    {% csrf_token %}
+    <!-- {% csrf_token %} -->
     <input
       type="url"
       id="url"
@@ -55,7 +55,7 @@
     const formData = new FormData(event.target);
     const response = await fetch("{% url 'instagram_photo_download' %}", {
       method: "POST",
-      headers: { "X-CSRFToken": "{{ csrf_token }}" },
+      // headers: { "X-CSRFToken": "{{ csrf_token }}" },
       body: formData,
     });
     const data = await response.json();
