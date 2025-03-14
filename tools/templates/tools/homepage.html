@@ -1,51 +1,71 @@
 {% extends 'tools/base.html' %} {% block content %}
-<div class="text-center mb-8">
-  <h2 class="text-3xl font-bold text-gray-800 mb-4">
+<div class="text-center mb-12">
+  <h2 class="text-4xl font-bold text-gray-800 mb-4 animate-fade-in">
     Welcome to the Media & Content Tools
   </h2>
-  <p class="text-lg text-gray-600">Choose a tool below to get started</p>
+  <p class="text-xl text-gray-600 max-w-2xl mx-auto">Choose a tool below to get started</p>
 </div>
 
-<div class="flex flex-wrap gap-6 justify-center">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
   <a
     href="{% url 'instagram_reel_download' %}"
-    class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition w-full md:w-1/2 lg:w-1/3"
+    class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
   >
-    <h3 class="text-xl font-semibold text-blue-600">Instagram Reel Download</h3>
-    <p class="text-gray-500">Download Instagram reels with ease.</p>
+    <div>
+      <div class="text-indigo-600 mb-4"><i class="fas fa-video fa-2x"></i></div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">Instagram Reel Download</h3>
+      <p class="text-gray-600">Download Instagram reels with ease.</p>
+    </div>
+    <div class="mt-4 text-indigo-600 font-medium">Get Started <i class="fas fa-arrow-right ml-1"></i></div>
   </a>
   <a
     href="{% url 'instagram_hashtag_generator' %}"
-    class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition w-full md:w-1/2 lg:w-1/3"
+    class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
   >
-    <h3 class="text-xl font-semibold text-blue-600">
-      Instagram Hashtag Generator
-    </h3>
-    <p class="text-gray-500">Generate hashtags based on image content.</p>
+    <div>
+      <div class="text-indigo-600 mb-4"><i class="fas fa-hashtag fa-2x"></i></div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">
+        Instagram Hashtag Generator
+      </h3>
+      <p class="text-gray-600">Generate hashtags based on image content.</p>
+    </div>
+    <div class="mt-4 text-indigo-600 font-medium">Get Started <i class="fas fa-arrow-right ml-1"></i></div>
   </a>
 
   <a
     href="{% url 'instagram_to_mp3' %}"
-    class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition w-full md:w-1/2 lg:w-1/3"
+    class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
   >
-    <h3 class="text-xl font-semibold text-blue-600">Instagram to MP3</h3>
-    <p class="text-gray-500">Convert Instagram videos to audio files.</p>
+    <div>
+      <div class="text-indigo-600 mb-4"><i class="fas fa-music fa-2x"></i></div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">Instagram to MP3</h3>
+      <p class="text-gray-600">Convert Instagram videos to audio files.</p>
+    </div>
+    <div class="mt-4 text-indigo-600 font-medium">Get Started <i class="fas fa-arrow-right ml-1"></i></div>
   </a>
   <a
     href="{% url 'instagram_photo_download' %}"
-    class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition w-full md:w-1/2 lg:w-1/3"
+    class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
   >
-    <h3 class="text-xl font-semibold text-blue-600">
-      Instagram Photo Download
-    </h3>
-    <p class="text-gray-500">Download photos from Instagram.</p>
+    <div>
+      <div class="text-indigo-600 mb-4"><i class="fas fa-image fa-2x"></i></div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">
+        Instagram Photo Download
+      </h3>
+      <p class="text-gray-600">Download photos from Instagram.</p>
+    </div>
+    <div class="mt-4 text-indigo-600 font-medium">Get Started <i class="fas fa-arrow-right ml-1"></i></div>
   </a>
   <a
     href="{% url 'facebook_reel_download' %}"
-    class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition w-full md:w-1/2 lg:w-1/3"
+    class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
   >
-    <h3 class="text-xl font-semibold text-blue-600">Facebook Reel Download</h3>
-    <p class="text-gray-500">Download Facebook reels instantly.</p>
+    <div>
+      <div class="text-indigo-600 mb-4"><i class="fab fa-facebook fa-2x"></i></div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">Facebook Reel Download</h3>
+      <p class="text-gray-600">Download Facebook reels instantly.</p>
+    </div>
+    <div class="mt-4 text-indigo-600 font-medium">Get Started <i class="fas fa-arrow-right ml-1"></i></div>
   </a>
 </div>
 {% endblock content %}
