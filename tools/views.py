@@ -219,3 +219,10 @@ def facebook_reel_download(request):
                         {'error': f'An error occurred: {str(e)}'})
             
     return render(request, 'tools/facebook_reel_download.html')
+
+def about(request):
+    return render(request, 'tools/about.html')
+
+def contact(request):
+    return render(request, 'tools/contact.html')
+

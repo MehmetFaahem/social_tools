@@ -3,13 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Tool Suite{% endblock title %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>{% block title %}Nextdownloder{% endblock title %}</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://res.cloudinary.com/devvizeuo/image/upload/v1742022050/icon_zvw8oe.png"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -24,43 +38,340 @@
       .card {
         @apply bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 overflow-hidden;
       }
+      .header-gradient {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(9, 9, 121, 1) 51%,
+          rgba(0, 77, 157, 1) 100%
+        );
+      }
+      .nav-link {
+        @apply px-4 text-white opacity-90 hover:opacity-100 transition-opacity duration-200 relative;
+      }
+      .nav-link::after {
+        content: "";
+        @apply absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300;
+      }
+      .nav-link:hover::after {
+        @apply w-full;
+      }
+      .footer-gradient {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(9, 9, 121, 1) 51%,
+          rgba(0, 77, 157, 1) 100%
+        );
+      }
     </style>
   </head>
   <body class="bg-gray-100 font-sans leading-normal tracking-normal">
-    <header class="bg-blue-600 text-white p-4 shadow-lg">
-      <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold cursor-pointer" onclick="goto_homepage()">Next Downloader</h1>
-        <nav>
-          <a href="{% url 'homepage' %}" class="hover:underline px-4 text-white"
-            >Home</a
+    <header class="header-gradient text-white py-5 shadow-lg">
+      <div
+        class="container mx-auto flex flex-wrap justify-between items-center px-6"
+      >
+        <div
+          class="flex items-center cursor-pointer hover:opacity-90 transition-opacity duration-200"
+          onclick="goto_homepage()"
+        >
+          <img
+            src="https://res.cloudinary.com/devvizeuo/image/upload/v1742022050/logo_fydn7c.png"
+            alt="Next Downloader Logo"
+            class="h-8 w-auto mr-3"
+          />
+          <h1 class="text-2xl font-bold">Next Downloder</h1>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button
+          id="mobile-menu-button"
+          class="md:hidden flex items-center px-3 py-2 text-white hover:opacity-75"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Navigation Menu -->
+        <nav
+          id="navigation-menu"
+          class="hidden md:flex w-full md:w-auto items-center justify-end"
+        >
+          <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+            <a href="{% url 'homepage' %}" class="nav-link py-2 md:py-0"
+              >Home</a
+            >
+
+            <!-- Services Dropdown -->
+            <div class="relative group">
+              <button class="nav-link py-2 md:py-0 flex items-center">
+                Services
+                <svg
+                  class="w-4 h-4 ml-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </button>
+              <div
+                class="hidden group-hover:block absolute left-0 mt-0 w-64 bg-white rounded-md shadow-lg py-1 z-50"
+              >
+                <a
+                  href="{% url 'instagram_reel_download' %}"
+                  class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+                >
+                  <i class="fas fa-video mr-2"></i>Instagram Reel Download
+                </a>
+                <a
+                  href="{% url 'instagram_hashtag_generator' %}"
+                  class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+                >
+                  <i class="fas fa-hashtag mr-2"></i>Instagram Hashtag Generator
+                </a>
+                <a
+                  href="{% url 'instagram_to_mp3' %}"
+                  class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+                >
+                  <i class="fas fa-music mr-2"></i>Instagram to MP3
+                </a>
+                <a
+                  href="{% url 'instagram_photo_download' %}"
+                  class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+                >
+                  <i class="fas fa-image mr-2"></i>Instagram Photo Download
+                </a>
+                <a
+                  href="{% url 'facebook_reel_download' %}"
+                  class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+                >
+                  <i class="fab fa-facebook mr-2"></i>Facebook Reel Download
+                </a>
+              </div>
+            </div>
+
+            <a href="{% url 'about' %}" class="nav-link py-2 md:py-0">About</a>
+            <a href="{% url 'contact' %}" class="nav-link py-2 md:py-0"
+              >Contact</a
+            >
+          </div>
         </nav>
       </div>
     </header>
+
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("navigation-menu").classList.toggle("hidden");
+        });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", function (event) {
+        const navigationMenu = document.getElementById("navigation-menu");
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+
+        if (
+          !navigationMenu.contains(event.target) &&
+          !mobileMenuButton.contains(event.target)
+        ) {
+          navigationMenu.classList.add("hidden");
+        }
+      });
+
+      // Services dropdown functionality
+      const servicesDropdown = document.querySelector(".group");
+      const dropdownContent = servicesDropdown.querySelector(
+        'div[class*="hidden"]'
+      );
+
+      // Handle click events for mobile
+      servicesDropdown.addEventListener("click", function (e) {
+        if (window.innerWidth < 768) {
+          // md breakpoint
+          dropdownContent.classList.toggle("hidden");
+          e.stopPropagation();
+        }
+      });
+
+      // Handle hover events for desktop
+      servicesDropdown.addEventListener("mouseenter", function () {
+        if (window.innerWidth >= 768) {
+          dropdownContent.classList.remove("hidden");
+        }
+      });
+
+      servicesDropdown.addEventListener("mouseleave", function () {
+        if (window.innerWidth >= 768) {
+          dropdownContent.classList.add("hidden");
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!servicesDropdown.contains(e.target)) {
+          dropdownContent.classList.add("hidden");
+        }
+      });
+
+      function goto_homepage() {
+        window.location.href = "{% url 'homepage' %}";
+      }
+    </script>
 
     <main class="container mx-auto p-6">
       {% block content %}{% endblock content %}
     </main>
 
-    <footer
-      class="bg-blue-600 text-white text-center p-4 mt-8 fixed bottom-0 w-full"
-    >
-      <p>
-        &copy; 2024 Next Downloader. Built BY
-        <a
-          class="text-white hover:underline"
-          href="https://www.nextdownloader.com"
-          target="_blank"
-          >Next Downloader</a
-        >
-      </p>
+    <footer class="footer-gradient text-white py-8 w-full shadow-lg">
+      <div class="container mx-auto px-6">
+        <div class="flex items-center justify-between mb-6 space-x-4">
+          <p class="text-sm">Get connected with us on social networks:</p>
+          <div class="flex space-x-4">
+            <a
+              href="#"
+              class="text-white hover:opacity-75 transition-opacity duration-200"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a
+              href="#"
+              class="text-white hover:opacity-75 transition-opacity duration-200"
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a
+              href="#"
+              class="text-white hover:opacity-75 transition-opacity duration-200"
+              ><i class="fab fa-google"></i
+            ></a>
+            <a
+              href="#"
+              class="text-white hover:opacity-75 transition-opacity duration-200"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a
+              href="#"
+              class="text-white hover:opacity-75 transition-opacity duration-200"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a
+              href="#"
+              class="text-white hover:opacity-75 transition-opacity duration-200"
+              ><i class="fab fa-github"></i
+            ></a>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h6 class="text-lg font-semibold mb-4">COMPANY NAME</h6>
+            <p class="text-sm opacity-90 mb-4">
+              Here you can use rows and columns to organize your footer content.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            </p>
+          </div>
+          <div>
+            <h6 class="text-lg font-semibold mb-4">PRODUCTS</h6>
+            <ul class="text-sm space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >MDBootstrap</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >MDWordPress</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >BrandFlow</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >Bootstrap Angular</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="text-lg font-semibold mb-4">USEFUL LINKS</h6>
+            <ul class="text-sm space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >Your Account</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >Become an Affiliate</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >Shipping Rates</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:opacity-75 transition-opacity duration-200"
+                  >Help</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="text-lg font-semibold mb-4">CONTACT</h6>
+            <ul class="text-sm space-y-2">
+              <li class="flex items-center">
+                <i class="fas fa-home mr-3"></i> New York, NY 10012, US
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-envelope mr-3"></i> info@example.com
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-phone mr-3"></i> + 01 234 567 88
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-print mr-3"></i> + 01 234 567 89
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </footer>
-
-    <script>
-      function goto_homepage() {
-        window.location.href = "{% url 'homepage' %}";
-      }
-    </script>
 
     <script>
       function goto_homepage() {
