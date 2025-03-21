@@ -28,7 +28,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-10f0d.up.railway.app',
+    'https://web-production-f14de.up.railway.app',
+    'https://nextdownloder.com'
 ]
 
 
