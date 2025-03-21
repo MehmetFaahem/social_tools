@@ -6,6 +6,7 @@ from moviepy.editor import VideoFileClip
 from io import BytesIO
 import tempfile
 import os
+import base64
 
 def homepage(request):
     return render(request, "tools/homepage.html")
@@ -219,6 +220,56 @@ def facebook_reel_download(request):
                         {'error': f'An error occurred: {str(e)}'})
             
     return render(request, 'tools/facebook_reel_download.html')
+
+def ai_image_generator(request):
+    if request.method == 'POST':
+        try:
+            prompt = request.POST.get('prompt')
+            
+            # Get environment variables
+            cloudflare_account_id = os.environ.get('cloudflareAccountId')
+            cloudflare_api_key = os.environ.get('cloudflareApiKey')
+            
+            if not cloudflare_account_id or not cloudflare_api_key:
+                return render(request, 'tools/ai_image_generator.html', 
+                            {'error': 'API configuration is missing. Please contact the administrator.'})
+            
+            # Make request to Cloudflare Workers AI API
+            url = f"https://api.cloudflare.com/client/v4/accounts/{cloudflare_account_id}/ai/run/@cf/stabilityai/stable-diffusion-xl-base-1.0"
+            headers = {
+                "Authorization": f"Bearer {cloudflare_api_key}",
+                "Content-Type": "application/json"
+            }
+            payload = {"prompt": prompt}
+            
+            response = requests.post(url, headers=headers, json=payload)
+            
+            # Check if the response is an image
+            if response.status_code == 200 and response.headers.get('content-type', '').startswith('image/'):
+                # Convert the image to base64
+                image_data = base64.b64encode(response.content).decode('utf-8')
+                base64_image = f"data:image/png;base64,{image_data}"
+                
+                return render(request, 'tools/ai_image_generator.html', 
+                            {'image_data': base64_image})
+            else:
+                # Handle error response
+                error_message = "Failed to generate image."
+                try:
+                    error_data = response.json()
+                    if 'errors' in error_data and error_data['errors']:
+                        error_message = error_data['errors'][0].get('message', error_message)
+                except:
+                    pass
+                
+                return render(request, 'tools/ai_image_generator.html', 
+                            {'error': error_message})
+                
+        except Exception as e:
+            return render(request, 'tools/ai_image_generator.html', 
+                        {'error': f'An error occurred: {str(e)}'})
+            
+    return render(request, 'tools/ai_image_generator.html')
 
 def about(request):
     return render(request, 'tools/about.html')

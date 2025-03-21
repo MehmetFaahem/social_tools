@@ -11,6 +11,7 @@ urlpatterns = [
     path('instagram-to-mp3/', views.instagram_to_mp3, name='instagram_to_mp3'),
     path('instagram-photo-download/', views.instagram_photo_download, name='instagram_photo_download'),
     path('facebook-reel-download/', views.facebook_reel_download, name='facebook_reel_download'),
+    path('ai-image-generator/', views.ai_image_generator, name='ai_image_generator'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
 ]

@@ -12,6 +12,21 @@
   class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
 >
   <a
+    href="{% url 'ai_image_generator' %}"
+    class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
+  >
+    <div>
+      <div class="text-indigo-600 mb-4"><i class="fas fa-paint-brush fa-2x"></i></div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">
+        AI Image Generator
+      </h3>
+      <p class="text-gray-600">Create custom images with AI technology.</p>
+    </div>
+    <div class="mt-4 text-indigo-600 font-medium">
+      Get Started <i class="fas fa-arrow-right ml-1"></i>
+    </div>
+  </a>
+  <a
     href="{% url 'instagram_reel_download' %}"
     class="card p-6 text-center transform hover:scale-105 transition-all duration-300 flex flex-col justify-between"
   >
