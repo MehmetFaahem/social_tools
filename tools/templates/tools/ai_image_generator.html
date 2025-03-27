@@ -345,52 +345,41 @@
 </style>
 
 <script>
-document
-  .getElementById("image-form")
-  .addEventListener("submit", function (event) {
-    // Show progress modal
-    const progressModal = document.getElementById("progress-modal");
-    const progressBar = document.getElementById("progress-bar");
-    const progressText = document.getElementById("progress-text");
-    progressModal.classList.remove("hidden");
+  document
+    .getElementById("image-form")
+    .addEventListener("submit", function (event) {
+      // Show progress modal
+      const progressModal = document.getElementById("progress-modal");
+      const progressBar = document.getElementById("progress-bar");
+      const progressText = document.getElementById("progress-text");
+      progressModal.classList.remove("hidden");
 
-    // Hide regular loading indicator
-    document.getElementById("loading").classList.add("hidden");
+      // Hide regular loading indicator
+      document.getElementById("loading").classList.add("hidden");
 
-    // Disable the button
-    const button = document.getElementById("generate-btn");
-    button.disabled = true;
-    button.classList.add("opacity-50", "cursor-not-allowed");
-    button.innerHTML = "Generating...";
+      // Disable the button
+      const button = document.getElementById("generate-btn");
+      button.disabled = true;
+      button.classList.add("opacity-50", "cursor-not-allowed");
+      button.innerHTML = "Generating...";
 
-    // Simulate progress
-    let progress = 0;
-    const interval = setInterval(function () {
-      // Increment progress
-      progress += Math.floor(Math.random() * 5) + 1;
+      // Simulate progress
+      let progress = 0;
+      const interval = setInterval(function () {
+        // Increment progress
+        progress += Math.floor(Math.random() * 5) + 1;
 
-      if (progress >= 99) {
-        progress = 99; // Cap at 99% until actual completion
-        clearInterval(interval);
+        if (progress >= 99) {
+          progress = 99; // Cap at 99% until actual completion
+          clearInterval(interval);
+        }
 
-        // Add delay after reaching 100%
-        setTimeout(() => {
-          progressBar.style.width = "100%";
-          progressText.textContent = "100%";
-          
-          // Hide modal after additional 4 seconds
-          setTimeout(() => {
-            progressModal.classList.add("hidden");
-          }, 4000);
-        }, 500);
-      }
+        // Update progress bar and text
+        progressBar.style.width = progress + "%";
+        progressText.textContent = progress + "%";
+      }, 300);
 
-      // Update progress bar and text
-      progressBar.style.width = progress + "%";
-      progressText.textContent = progress + "%";
-    }, 300);
-
-    // Allow form submission to continue
-  });
+      // Allow form submission to continue
+    });
 </script>
 {% endblock %}
