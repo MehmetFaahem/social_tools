@@ -38,13 +38,14 @@
   <div class="mt-6">
     <h3 class="text-lg font-semibold text-gray-700 mb-3">Generated Image</h3>
     <div class="border rounded p-2">
-      <div class="skeleton-loader" id="image-skeleton"></div>
+      <!-- Skeleton loader that shows while image is loading -->
+      <div id="image-skeleton" class="animate-pulse bg-gray-300 w-full h-64 rounded"></div>
       <img
         src="{{ image_data }}"
         alt="Generated image"
         class="w-full rounded hidden"
         id="generated-image"
-        onload="handleImageLoad()"
+        onload="imageLoaded()"
       />
     </div>
     <a
@@ -56,38 +57,6 @@
     </a>
   </div>
   {% endif %}
-
-  <!-- Add this to your existing style section -->
-  <style>
-    .skeleton-loader {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      width: 100%;
-      height: 300px;
-      border-radius: 0.25rem;
-    }
-
-    @keyframes loading {
-      0% {
-        background-position: 200% 0;
-      }
-      100% {
-        background-position: -200% 0;
-      }
-    }
-  </style>
-
-  <!-- Add this to your existing script section -->
-  <script>
-    function handleImageLoad() {
-      const skeleton = document.getElementById('image-skeleton');
-      const image = document.getElementById('generated-image');
-      
-      skeleton.style.display = 'none';
-      image.classList.remove('hidden');
-    }
-  </script>
 </div>
 
 <!-- Progress Modal -->
@@ -149,77 +118,6 @@
       <li>Game design & concept art</li>
       <li>Personalized gifts & wallpapers</li>
     </ul>
-  </section>
-
-  <section class="mb-8">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">How <span><a href="https://nextdownloder.com/">NextDownloder</a></span> Enhances AI Image Generation</h2>
-    <p class="text-gray-600 mb-4">While many AI generated images free online without login services exist, <span><a href="https://nextdownloder.com/">NextDownloder</a></span> stands out with its user-friendly approach and powerful capabilities.</p>
-    
-    <h3 class="text-xl font-medium text-gray-800 mb-4">Key Features Comparison</h3>
-    <div class="overflow-x-auto">
-      <table class="min-w-full border-collapse border border-gray-300">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="border border-gray-300 px-4 py-2">Feature</th>
-            <th class="border border-gray-300 px-4 py-2"><span><a href="https://nextdownloder.com/">NextDownloder</a></span></th>
-            <th class="border border-gray-300 px-4 py-2">Microsoft Designer</th>
-            <th class="border border-gray-300 px-4 py-2">Bing Image Creator</th>
-            <th class="border border-gray-300 px-4 py-2">Magic Studio</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">No Sign-Up Required</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">❌</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">Unlimited Free Generations</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">❌</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">High-Quality Outputs</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">User-Friendly Interface</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">Extensive Customization</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">Moderate</td>
-            <td class="border border-gray-300 px-4 py-2">Moderate</td>
-            <td class="border border-gray-300 px-4 py-2">Moderate</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">Mobile Optimization</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">Community Features (Planned)</td>
-            <td class="border border-gray-300 px-4 py-2">✅</td>
-            <td class="border border-gray-300 px-4 py-2">❌</td>
-            <td class="border border-gray-300 px-4 py-2">❌</td>
-            <td class="border border-gray-300 px-4 py-2">❌</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </section>
 
   <section class="mb-8">
@@ -377,6 +275,20 @@
       transform: rotate(360deg);
     }
   }
+
+  /* Add animation for skeleton loader */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
+  .animate-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
 </style>
 
 <script>
@@ -416,5 +328,12 @@
 
       // Allow form submission to continue
     });
+    
+  // Function to handle when the image is fully loaded
+  function imageLoaded() {
+    // Hide skeleton and show the actual image
+    document.getElementById("image-skeleton").classList.add("hidden");
+    document.getElementById("generated-image").classList.remove("hidden");
+  }
 </script>
 {% endblock %}
