@@ -43,8 +43,9 @@
       <img
         src="{{ image_data }}"
         alt="Generated image"
-        class="w-full rounded hidden"
+        class="w-full rounded"
         id="generated-image"
+        style="display: none;"
         onload="imageLoaded()"
       />
     </div>
@@ -332,13 +333,8 @@
   // Function to handle when the image is fully loaded
   function imageLoaded() {
     // Hide skeleton and show the actual image
-    const skeleton = document.getElementById("image-skeleton");
-    const image = document.getElementById("generated-image");
-    
-    if (skeleton && image) {
-      skeleton.style.display = "none";
-      image.classList.remove("hidden");
-    }
+    document.getElementById("image-skeleton").style.display = "none";
+    document.getElementById("generated-image").style.display = "block";
   }
 </script>
 {% endblock %}
