@@ -332,8 +332,13 @@
   // Function to handle when the image is fully loaded
   function imageLoaded() {
     // Hide skeleton and show the actual image
-    document.getElementById("image-skeleton").classList.add("hidden");
-    document.getElementById("generated-image").classList.remove("hidden");
+    const skeleton = document.getElementById("image-skeleton");
+    const image = document.getElementById("generated-image");
+    
+    if (skeleton && image) {
+      skeleton.style.display = "none";
+      image.classList.remove("hidden");
+    }
   }
 </script>
 {% endblock %}
