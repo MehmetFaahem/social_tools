@@ -50,7 +50,7 @@
     <a
       href="{{ image_data }}"
       download="ai-generated-image.png"
-      class="block w-full text-center bg-green-600 text-white py-2 rounded hover:bg-green-700 transition fixed bottom-2 right-2 w-1/2 sm:w-[95%]"
+      class="download-button block text-center bg-green-600 text-white py-2 rounded hover:bg-green-700 transition fixed bottom-2 right-2"
     >
       Download Image
     </a>
@@ -287,6 +287,16 @@
   
   .animate-pulse {
     animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .download-button{
+    width: 16%;
+  }
+
+  @media (max-width: 468px) {
+    .download-button{
+      width: 96%;
+    }
   }
 </style>
 
