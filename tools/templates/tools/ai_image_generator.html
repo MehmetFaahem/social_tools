@@ -37,22 +37,20 @@
   {% endif %} {% if image_data %}
   <div class="mt-6">
     <h3 class="text-lg font-semibold text-gray-700 mb-3">Generated Image</h3>
-    <div class="border rounded p-2">
+    <div class="border rounded p-2 relative">
       <!-- Skeleton loader that shows while image is loading -->
       <div id="image-skeleton" class="animate-pulse bg-gray-300 w-full h-64 rounded"></div>
       <img
         src="{{ image_data }}"
         alt="Generated image"
-        class="w-full rounded"
+        class="w-full rounded absolute top-0 left-0"
         id="generated-image"
-        style="display: none;"
-        onload="imageLoaded()"
       />
     </div>
     <a
       href="{{ image_data }}"
       download="ai-generated-image.png"
-      class="block w-full text-center bg-green-600 text-white py-2 rounded hover:bg-green-700 transition mt-3"
+      class="block w-full text-center bg-green-600 text-white py-2 rounded hover:bg-green-700 transition fixed bottom-2 right-2 w-1/2 sm:w-[95%]"
     >
       Download Image
     </a>
@@ -330,11 +328,5 @@
       // Allow form submission to continue
     });
     
-  // Function to handle when the image is fully loaded
-  function imageLoaded() {
-    // Hide skeleton and show the actual image
-    document.getElementById("image-skeleton").style.display = "none";
-    document.getElementById("generated-image").style.display = "block";
-  }
 </script>
 {% endblock %}
