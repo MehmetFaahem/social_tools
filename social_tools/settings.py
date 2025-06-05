@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,3 +129,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cloudflare API Configuration for AI Image Generator
+CLOUDFLARE_ACCOUNT_ID = '70c5b37bf8fe9fb075ac8958a3998809'
+CLOUDFLARE_API_KEY = 'J1S_pFgQ1tXu7PsCvXUFObp4FF8mjC1PpGlOre9k'

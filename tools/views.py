@@ -226,13 +226,14 @@ def ai_image_generator(request):
         try:
             prompt = request.POST.get('prompt')
             
-            # Get environment variables
-            cloudflare_account_id = os.environ.get('cloudflareAccountId')
-            cloudflare_api_key = os.environ.get('cloudflareApiKey')
+            # Get configuration from Django settings
+            from django.conf import settings
+            cloudflare_account_id = getattr(settings, 'CLOUDFLARE_ACCOUNT_ID', None)
+            cloudflare_api_key = getattr(settings, 'CLOUDFLARE_API_KEY', None)
             
             if not cloudflare_account_id or not cloudflare_api_key:
                 return render(request, 'tools/ai_image_generator.html', 
-                            {'error': 'API configuration is missing. Please contact the administrator.'})
+                            {'error': 'Cloudflare API configuration is missing. Please set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_KEY environment variables.'})
             
             # Make request to Cloudflare Workers AI API
             url = f"https://api.cloudflare.com/client/v4/accounts/{cloudflare_account_id}/ai/run/@cf/stabilityai/stable-diffusion-xl-base-1.0"
