@@ -19,7 +19,7 @@
     />
     <button
       type="submit"
-      class="w-full bg-orange-600 text-white py-3 rounded hover:bg-orange-700 transition font-semibold"
+      class="w-full bg-blue-600 text-white py-3 rounded hover:bg-orange-700 transition font-semibold"
       onclick="this.form.submit(); this.disabled=true; this.innerHTML='<div class=\'loader\'></div>Fetching your video...';"
     >
       Download Video
@@ -31,6 +31,24 @@
     <div class="flex items-center">
       <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
       <span class="text-red-700">{{ error }}</span>
+    </div>
+  </div>
+  {% endif %}
+  
+  {% if info %}
+  <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+    <div class="flex items-center">
+      <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+      <span class="text-blue-700">{{ info }}</span>
+    </div>
+  </div>
+  {% endif %}
+  
+  {% if warning %}
+  <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+    <div class="flex items-center">
+      <i class="fas fa-exclamation-circle text-yellow-500 mr-2"></i>
+      <span class="text-yellow-700">{{ warning }}</span>
     </div>
   </div>
   {% endif %}

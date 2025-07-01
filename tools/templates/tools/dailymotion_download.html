@@ -49,6 +49,9 @@
       {% if view_count %}
       <p class="text-gray-600 text-sm">Views: {{ view_count|floatformat:0 }}</p>
       {% endif %}
+      {% if format_info %}
+      <p class="text-gray-600 text-sm">Format: {{ format_info }}</p>
+      {% endif %}
     </div>
     {% endif %}
     
