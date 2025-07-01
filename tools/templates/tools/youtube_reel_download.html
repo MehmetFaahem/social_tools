@@ -1,0 +1,100 @@
+{% extends 'tools/base.html' %} {% block content %}
+<div class="bg-white shadow-lg rounded-lg p-8 max-w-2xl mx-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+    YouTube Reel Download
+  </h2>
+  <p class="text-gray-600 text-center mb-6">
+    Download YouTube videos, shorts, and reels in high quality
+  </p>
+  
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <input
+      type="url"
+      id="url"
+      name="url"
+      class="w-full p-3 border rounded focus:outline-none focus:border-blue-500"
+      placeholder="Enter YouTube video URL (e.g., https://youtube.com/watch?v=...)"
+      required
+    />
+    <button
+      type="submit"
+      class="w-full bg-red-600 text-white py-3 rounded hover:bg-red-700 transition font-semibold"
+      onclick="this.form.submit(); this.disabled=true; this.innerHTML='<div class=\'loader\'></div>Fetching your video...';"
+    >
+      Download Video
+    </button>
+  </form>
+  
+  {% if error %}
+  <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div class="flex items-center">
+      <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+      <span class="text-red-700">{{ error }}</span>
+    </div>
+  </div>
+  {% endif %}
+  
+  {% if download_link %}
+  <div class="mt-6 bg-gray-50 rounded-lg p-6">
+    {% if title %}
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ title }}</h3>
+      {% if uploader %}
+      <p class="text-gray-600 text-sm">By: {{ uploader }}</p>
+      {% endif %}
+      {% if duration %}
+      <p class="text-gray-600 text-sm">Duration: {{ duration|floatformat:0 }} seconds</p>
+      {% endif %}
+      {% if view_count %}
+      <p class="text-gray-600 text-sm">Views: {{ view_count|floatformat:0 }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+    
+    {% if thumbnail %}
+    <div class="mb-4">
+      <img src="{{ thumbnail }}" alt="Video thumbnail" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+    </div>
+    {% endif %}
+    
+    <div class="text-center">
+      <a
+        href="{{ download_link }}"
+        target="_blank"
+        class="inline-flex items-center bg-red-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-700 transition shadow-lg"
+      >
+        <i class="fas fa-download mr-2"></i>
+        Download Video
+      </a>
+      <p class="text-sm text-gray-500 mt-2">
+        Right-click and "Save as" to download the video
+      </p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #ffffff;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %} 

@@ -43,6 +43,9 @@ python manage.py runserver
 - Instagram Hashtag Generator
 - Instagram to MP3 Converter
 - Facebook Reel Download
+- YouTube Reel Download
+- Dailymotion Download
+- Shutterstock Video Download
 - AI Image Generator (requires Cloudflare API)
 
 ## Note

@@ -272,6 +272,256 @@ def ai_image_generator(request):
             
     return render(request, 'tools/ai_image_generator.html')
 
+def youtube_reel_download(request):
+    if request.method == 'POST':
+        try:
+            video_url = request.POST.get('url')
+            
+            # Use yt-dlp to get video info and download URL with more flexible format selection
+            ydl_opts = {
+                'format': 'best[height<=1080]/best[height<=720]/best[height<=480]/best',  # Progressive fallback
+                'quiet': True,
+                'no_warnings': True,
+                'extract_flat': False,
+                'ignoreerrors': False,
+            }
+            
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                # Extract video info
+                info = ydl.extract_info(video_url, download=False)
+                
+                # Get the download URL - yt-dlp will have selected the best available format
+                download_url = None
+                
+                if 'url' in info:
+                    # Direct URL available
+                    download_url = info['url']
+                elif 'formats' in info and info['formats']:
+                    # Multiple formats available, get the best one
+                    formats = info['formats']
+                    
+                    # Try to get formats with both video and audio first
+                    video_audio_formats = [f for f in formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none' and f.get('url')]
+                    
+                    if video_audio_formats:
+                        # Sort by quality and prefer mp4
+                        video_audio_formats.sort(key=lambda x: (
+                            x.get('height', 0),
+                            x.get('width', 0),
+                            x.get('ext') == 'mp4',
+                            x.get('format_id', '').startswith('18')  # Prefer format 18 (360p mp4)
+                        ), reverse=True)
+                        download_url = video_audio_formats[0]['url']
+                    else:
+                        # Fallback to any available format
+                        available_formats = [f for f in formats if f.get('url')]
+                        if available_formats:
+                            download_url = available_formats[0]['url']
+                
+                if not download_url:
+                    raise Exception("No downloadable format found for this video")
+                
+                context = {
+                    'download_link': download_url,
+                    'title': info.get('title', 'YouTube Video'),
+                    'duration': info.get('duration', 0),
+                    'thumbnail': info.get('thumbnail', ''),
+                    'uploader': info.get('uploader', ''),
+                    'view_count': info.get('view_count', 0)
+                }
+                
+                return render(request, 'tools/youtube_reel_download.html', context)
+                
+        except Exception as e:
+            error_message = str(e)
+            # Clean up the error message for better user experience
+            if 'Requested format is not available' in error_message:
+                error_message = "This video format is not available for download. Please try a different video."
+            elif 'Private video' in error_message:
+                error_message = "This video is private and cannot be downloaded."
+            elif 'Video unavailable' in error_message:
+                error_message = "This video is unavailable or has been removed."
+            else:
+                error_message = f"Failed to retrieve video: {error_message}"
+                
+            return render(request, 'tools/youtube_reel_download.html', 
+                        {'error': error_message})
+            
+    return render(request, 'tools/youtube_reel_download.html')
+
+def dailymotion_download(request):
+    if request.method == 'POST':
+        try:
+            video_url = request.POST.get('url')
+            
+            # Use yt-dlp with enhanced configuration for Dailymotion
+            ydl_opts = {
+                'format': 'best[height<=1080]/best[height<=720]/best[height<=480]/best',
+                'quiet': True,
+                'no_warnings': True,
+                'extract_flat': False,
+                'ignoreerrors': False,
+                'socket_timeout': 30,
+                'retries': 5,
+                'fragment_retries': 5,
+                'sleep_interval_requests': 0.5,  # Add delay between requests
+                'geo_bypass': True,  # Try to bypass geo-restrictions
+                'geo_bypass_country': 'US',  # Use US as fallback country
+                'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'http_headers': {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language': 'en-us,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'DNT': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1'
+                }
+            }
+            
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                # Extract video info with better error handling
+                info = ydl.extract_info(video_url, download=False)
+                
+                # Get the download URL - yt-dlp will have selected the best available format
+                download_url = None
+                
+                if 'url' in info:
+                    # Direct URL available
+                    download_url = info['url']
+                elif 'formats' in info and info['formats']:
+                    # Multiple formats available, get the best one
+                    formats = info['formats']
+                    
+                    # Filter out invalid formats
+                    valid_formats = [f for f in formats if f.get('url') and f.get('vcodec') != 'none']
+                    
+                    if valid_formats:
+                        # Prefer formats with audio, then by quality
+                        valid_formats.sort(key=lambda x: (
+                            x.get('acodec', 'none') != 'none',  # Prefer formats with audio
+                            x.get('height', 0),                # Then by video quality
+                            x.get('ext') == 'mp4',             # Prefer mp4
+                            x.get('filesize', 0)               # Then by file size
+                        ), reverse=True)
+                        download_url = valid_formats[0]['url']
+                
+                if not download_url:
+                    raise Exception("No downloadable format found for this video. The video may be geo-restricted or require authentication.")
+                
+                context = {
+                    'download_link': download_url,
+                    'title': info.get('title', 'Dailymotion Video'),
+                    'duration': info.get('duration', 0),
+                    'thumbnail': info.get('thumbnail', ''),
+                    'uploader': info.get('uploader', ''),
+                    'view_count': info.get('view_count', 0)
+                }
+                
+                return render(request, 'tools/dailymotion_download.html', context)
+                
+        except Exception as e:
+            error_message = str(e)
+            # Enhanced error handling for Dailymotion-specific issues
+            if 'timeout' in error_message.lower() or 'read timed out' in error_message.lower():
+                error_message = "Connection timeout with Dailymotion servers. Please try again in a few moments."
+            elif '429' in error_message or 'too many requests' in error_message.lower():
+                error_message = "Too many requests to Dailymotion. Please wait a few minutes before trying again."
+            elif '403' in error_message or 'forbidden' in error_message.lower():
+                error_message = "Access denied. This video may be geo-restricted or private."
+            elif '404' in error_message or 'not found' in error_message.lower():
+                error_message = "Video not found. Please check the URL and try again."
+            elif 'unavailable' in error_message.lower():
+                error_message = "This video is no longer available on Dailymotion."
+            elif 'geo' in error_message.lower() and 'block' in error_message.lower():
+                error_message = "This video is geo-blocked in your region."
+            elif 'authentication' in error_message.lower() or 'login' in error_message.lower():
+                error_message = "This video requires authentication to download."
+            else:
+                error_message = f"Failed to retrieve video: {error_message}. Try using a VPN if the video is geo-restricted."
+                
+            return render(request, 'tools/dailymotion_download.html', 
+                        {'error': error_message})
+            
+    return render(request, 'tools/dailymotion_download.html')
+
+def shutterstock_download(request):
+    if request.method == 'POST':
+        try:
+            video_url = request.POST.get('url')
+            
+            # Use yt-dlp to get video info and download URL with more flexible format selection
+            ydl_opts = {
+                'format': 'best[height<=1080]/best[height<=720]/best[height<=480]/best',  # Progressive fallback
+                'quiet': True,
+                'no_warnings': True,
+                'extract_flat': False,
+                'ignoreerrors': False,
+            }
+            
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                # Extract video info
+                info = ydl.extract_info(video_url, download=False)
+                
+                # Get the download URL - yt-dlp will have selected the best available format
+                download_url = None
+                
+                if 'url' in info:
+                    # Direct URL available
+                    download_url = info['url']
+                elif 'formats' in info and info['formats']:
+                    # Multiple formats available, get the best one
+                    formats = info['formats']
+                    
+                    # Try to get formats with both video and audio first
+                    video_audio_formats = [f for f in formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none' and f.get('url')]
+                    
+                    if video_audio_formats:
+                        # Sort by quality and prefer mp4
+                        video_audio_formats.sort(key=lambda x: (
+                            x.get('height', 0),
+                            x.get('width', 0),
+                            x.get('ext') == 'mp4'
+                        ), reverse=True)
+                        download_url = video_audio_formats[0]['url']
+                    else:
+                        # Fallback to any available format
+                        available_formats = [f for f in formats if f.get('url')]
+                        if available_formats:
+                            download_url = available_formats[0]['url']
+                
+                if not download_url:
+                    raise Exception("No downloadable format found for this video")
+                
+                context = {
+                    'download_link': download_url,
+                    'title': info.get('title', 'Shutterstock Video'),
+                    'duration': info.get('duration', 0),
+                    'thumbnail': info.get('thumbnail', ''),
+                    'uploader': info.get('uploader', ''),
+                    'view_count': info.get('view_count', 0)
+                }
+                
+                return render(request, 'tools/shutterstock_download.html', context)
+                
+        except Exception as e:
+            error_message = str(e)
+            # Clean up the error message for better user experience
+            if 'Requested format is not available' in error_message:
+                error_message = "This video format is not available for download. Please try a different video."
+            elif 'HTTP Error 403' in error_message or 'forbidden' in error_message.lower():
+                error_message = "Access denied. This content may be protected or require authentication."
+            elif 'HTTP Error 404' in error_message or 'not found' in error_message.lower():
+                error_message = "Video not found. Please check the URL and try again."
+            elif 'timeout' in error_message.lower():
+                error_message = "Connection timeout. Please try again later."
+            else:
+                error_message = f"Failed to retrieve video: {error_message}"
+                
+            return render(request, 'tools/shutterstock_download.html', 
+                        {'error': error_message})
+            
+    return render(request, 'tools/shutterstock_download.html')
+
 def about(request):
     return render(request, 'tools/about.html')
 
