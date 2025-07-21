@@ -1,0 +1,145 @@
+{% extends 'tools/base.html' %} {% block content %}
+
+<div class="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+    YouTube to MP3 Converter
+  </h2>
+  <p class="text-gray-600 text-center mb-6">
+    Extract audio from any YouTube video and download as MP3
+  </p>
+  <form method="post" class="space-y-4" id="convertForm">
+    {% csrf_token %}
+    <input
+      type="url"
+      id="url"
+      name="url"
+      class="w-full p-3 border rounded focus:outline-none focus:border-red-500"
+      placeholder="Enter YouTube video URL"
+      required
+    />
+    <button
+      type="submit"
+      class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+      id="submitBtn"
+    >
+      Convert to MP3
+    </button>
+  </form>
+  <div
+    id="error"
+    class="mt-4 text-center text-red-600"
+    style="display: none"
+  ></div>
+  <div id="loading" class="mt-4 text-center" style="display: none">
+    <div class="loader"></div>
+    <p>Converting video to MP3...</p>
+  </div>
+  <div
+    id="download-container"
+    class="mt-4 text-center"
+    style="display: none"
+  >
+    <p class="text-green-600 font-bold mb-3">Conversion successful!</p>
+    <p id="conversion-status" class="text-amber-600 mb-3" style="display: none">The file is still being processed. Please wait a moment before downloading.</p>
+    <a
+      href="#"
+      id="download-link"
+      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition inline-block"
+      target="_blank"
+    >
+      <i class="fas fa-download mr-2"></i>Download MP3
+    </a>
+  </div>
+</div>
+
+<style>
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #ef4444;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  document
+    .getElementById("convertForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = this;
+      const submitBtn = document.getElementById("submitBtn");
+      const loading = document.getElementById("loading");
+      const error = document.getElementById("error");
+      const downloadContainer = document.getElementById("download-container");
+      const downloadLink = document.getElementById("download-link");
+      const conversionStatus = document.getElementById("conversion-status");
+      
+      // Show loading, hide error and download container
+      loading.style.display = "block";
+      error.style.display = "none";
+      downloadContainer.style.display = "none";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Converting...";
+
+      // Submit form
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+      })
+        .then((response) => {
+          // Always parse as JSON first
+          return response.json().then(data => {
+            if (!response.ok) {
+              // If response is not OK, throw error with message
+              throw new Error(data.error || "An unknown error occurred");
+            }
+            return data;
+          });
+        })
+        .then((data) => {
+          // Handle successful response
+          downloadLink.href = data.download_url;
+          downloadLink.download = `${data.title || 'audio'}.mp3`;
+          
+          // Show conversion status message if still converting
+          if (data.status === "CONVERTING") {
+            conversionStatus.style.display = "block";
+          } else {
+            conversionStatus.style.display = "none";
+          }
+          
+          // Show download container
+          downloadContainer.style.display = "block";
+          
+          // Reset form state
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Convert to MP3";
+          loading.style.display = "none";
+        })
+        .catch((err) => {
+          // Show error
+          error.textContent =
+            err.message || "An error occurred during conversion";
+          error.style.display = "block";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Convert to MP3";
+          loading.style.display = "none";
+        });
+    });
+</script>
+
+{% endblock content %}

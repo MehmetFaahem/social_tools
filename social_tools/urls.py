@@ -12,6 +12,7 @@ urlpatterns = [
     path('instagram-photo-download/', views.instagram_photo_download, name='instagram_photo_download'),
     path('facebook-reel-download/', views.facebook_reel_download, name='facebook_reel_download'),
     path('youtube-reel-download/', views.youtube_reel_download, name='youtube_reel_download'),
+    path('youtube-to-mp3/', views.youtube_to_mp3, name='youtube_to_mp3'),
     path('dailymotion-download/', views.dailymotion_download, name='dailymotion_download'),
     path('shutterstock-download/', views.shutterstock_download, name='shutterstock_download'),
     path('ai-image-generator/', views.ai_image_generator, name='ai_image_generator'),

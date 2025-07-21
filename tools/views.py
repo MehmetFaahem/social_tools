@@ -111,7 +111,6 @@ def instagram_to_mp3(request):
     if request.method == 'POST':
         try:
             video_url = request.POST.get('url')
-            video = None
             
             # Create a temporary directory that will be automatically cleaned up
             with tempfile.TemporaryDirectory() as temp_dir:
@@ -850,4 +849,65 @@ def about(request):
 
 def contact(request):
     return render(request, 'tools/contact.html')
+
+def youtube_to_mp3(request):
+    if request.method == 'POST':
+        try:
+            video_url = request.POST.get('url')
+            
+            # Validate YouTube URL
+            video_id = extract_youtube_video_id(video_url)
+            if not video_id:
+                return JsonResponse({'error': 'Invalid YouTube URL format. Please check the URL and try again.'}, status=400)
+            
+            # Use new RapidAPI YouTube to MP3 converter
+            api_url = "https://youtube-mp36.p.rapidapi.com/dl"
+            
+            querystring = {"id": video_id}
+            
+            headers = {
+                "x-rapidapi-key": "cc092825dfmsha262f7b60dca253p158431jsne06852111435",
+                "x-rapidapi-host": "youtube-mp36.p.rapidapi.com"
+            }
+            
+            # Make the request to the API
+            response = requests.get(api_url, headers=headers, params=querystring)
+            
+            if response.status_code != 200:
+                return JsonResponse({'error': f'API Error: {response.status_code} - {response.text}'}, status=500)
+            
+            data = response.json()
+            
+            # Check if conversion is successful
+            if data.get('status') == "ok":
+                # Get the download URL and title
+                download_url = data.get('link')
+                title = data.get('title')
+                
+                if not download_url:
+                    return JsonResponse({'error': 'Failed to get download URL from API'}, status=500)
+                
+                # Clean filename
+                if title:
+                    title = re.sub(r'[^\w\s-]', '', title).strip().lower()
+                    title = re.sub(r'[-\s]+', '-', title)
+                else:
+                    title = 'youtube_audio'
+                
+                # Return JSON with download information
+                return JsonResponse({
+                    'success': True,
+                    'download_url': download_url,
+                    'title': title,
+                    'status': 'COMPLETED'
+                })
+            else:
+                # If not successful, return error
+                error_msg = f"Conversion failed: {data.get('msg', 'Unknown error')}"
+                return JsonResponse({'error': error_msg}, status=500)
+                
+        except Exception as e:
+            return JsonResponse({'error': f'Failed to convert to MP3: {str(e)}'}, status=500)
+            
+    return render(request, 'tools/youtube_to_mp3.html')
 
